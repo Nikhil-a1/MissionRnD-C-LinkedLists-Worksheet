@@ -19,9 +19,8 @@ struct node {
 	struct node *next;
 };
 typedef struct node list;
-list* mergesort(list *, int);
-list* merge(list *, list *, int, int);
-
+list *mergesort(list *, int);
+list *merge(list *, list *, int, int);
 struct node * sortLinkedList(struct node *head) {
 	if (head==NULL)
 	return NULL;
@@ -33,13 +32,15 @@ struct node * sortLinkedList(struct node *head) {
 		temp = temp->next;
 		len++;
 	}
-	head = mergesort(head, len);
+	temp = head;
+	head = mergesort(temp, len-1);
 	return head;
 }
-list* mergesort(list *present, int len)
+
+list *mergesort(list *present, int len)
 {
 	int mid, i = 0;
-	list *prev, *ptr, *t, *s;
+	list *prev, *ptr, *p, *s;
 	mid = len / 2;
 	prev = present;
 	if (mid>0)
@@ -50,35 +51,36 @@ list* mergesort(list *present, int len)
 			i++;
 		}
 		ptr = mergesort(prev, mid);
-		t = mergesort(present, len - mid);
-		s = merge(ptr, t, mid, len - mid);
+		p = mergesort(present, len - mid);
+		s = merge(ptr, p, mid, len - mid);
 		return s;
 	}
 	else
 		return present;
 }
 
-list* merge(list *ptr, list *t, int mid, int left)
+list *merge(list *ptr, list *p, int mid, int left)
 {
 	int len, i = 0, j = 1, m, n;
-	list *sort, *prv, *engine;
+	list *sort, *prv, *p1;
 	len = mid + left;
 	m = 0;
 	n = 0;
+
 	while (m<mid&&n<left)
 	{
 		sort = (list *)malloc(sizeof(list));
 		if (j == 1)
 		{
-			engine = sort;
+			p1 = sort;
 			j++;
 		}
 		else
 			prv->next = sort;
-		if (ptr->num < t->num)
+		if (ptr->num > p->num)
 		{
-			sort->num = t->num;
-			t = t->next;
+			sort->num = p->num;
+			p = p->next;
 			n++;
 		}
 		else
@@ -92,8 +94,8 @@ list* merge(list *ptr, list *t, int mid, int left)
 	while (n<left)
 	{
 		sort = (list *)malloc(sizeof(list));
-		sort->num = t->num;
-		t = t->next;
+		sort->num = p->num;
+		p = p->next;
 		prv->next = sort;
 		prv = sort;
 		n++;
@@ -108,8 +110,5 @@ list* merge(list *ptr, list *t, int mid, int left)
 		m++;
 	}
 	prv->next = NULL;
-	return engine;
+	return p1;
 }
-
-
-
